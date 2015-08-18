@@ -19,4 +19,6 @@ public class Constants {
 	public final static long DEFAULT_EXPIREDTIME = 60 * 1000;
 	public static final String GROUP_SPIT_KEY = "_focus_";
 
+	public static final String pre_cookies="pre_cookies";
+
 }
