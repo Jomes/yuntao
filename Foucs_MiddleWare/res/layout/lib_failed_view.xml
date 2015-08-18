@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerInParent="true"
+    android:id="@id/lib_failure"
+    android:background="@color/transparent"
+    android:gravity="center" >
+
+    <LinearLayout
+        android:id="@+id/view_loyout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/failed_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:src="@drawable/logo_default"
+            android:paddingBottom="@dimen/margin_small" />
+
+        <TextView
+            android:id="@+id/default_refresh_tip1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:paddingLeft="@dimen/margin_small"
+            android:paddingRight="@dimen/margin_small"
+            android:textColor="@color/text_light_gray"
+            android:textSize="@dimen/text_title_medium_large"
+             />
+
+        <TextView
+            android:id="@+id/default_refresh_tip2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/margin_xsmall"
+            android:gravity="center"
+            android:textColor="@color/text_light_gray"
+            android:textSize="@dimen/text_body_medium" 
+            android:paddingRight="@dimen/margin_medium"
+            android:paddingLeft="@dimen/margin_medium"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/margin_xlarge"
+        android:layout_below="@+id/view_loyout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/margin_xlarge"
+        android:gravity="center" />
+
+</RelativeLayout>

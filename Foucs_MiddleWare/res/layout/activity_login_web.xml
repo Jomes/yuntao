@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+
+       <include
+            android:id="@+id/title"
+            layout="@layout/title_public" />
+
+
+    <com.yuntao.widget.ScrollWebView
+        android:id="@+id/login_webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rel_title_1"
+        android:layout_centerHorizontal="true"
+        android:scrollbars="none" />
+
+    <!--<include
+        android:id="@+id/login_web_refreshview"
+        android:layout_below="@+id/login_web_title"
+        layout="@layout/layout_refresh_view" />
+
+    <include
+        android:id="@+id/login_web_failedview"
+        android:layout_below="@+id/login_web_title"
+        layout="@layout/layout_failed_view" />-->
+
+    <!--    <include layout="@layout/title_other"
+            android:id="@+id/login_web_title" />-->
+
+
+</RelativeLayout>
+

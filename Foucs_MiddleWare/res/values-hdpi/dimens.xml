@@ -1,0 +1,55 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    
+    <!-- 田镇源 arrow popup -->
+    <dimen name="arrow_popup_view_width">200dp</dimen>
+    <dimen name="arrow_popup_bottom_margin">80dp</dimen>
+    <dimen name="arrow_popup_centent_top_margin">-8dp</dimen>
+    
+    <dimen name="list_head_height">40dp</dimen>
+    <dimen name="layout_below_title_margin_top">47dp</dimen>
+    <dimen name="title_bar_back_width">47dp</dimen>
+    <dimen name="title_bar_height">47dp</dimen>
+
+    <dimen name="margin_xlarge">32dp</dimen>
+    <dimen name="margin_large">28dp</dimen>
+    <dimen name="margin_medium_xlarge">18dp</dimen>
+    <dimen name="margin_medium_large">16dp</dimen>
+    <dimen name="margin_medium">13dp</dimen>
+    <dimen name="margin_small">10dp</dimen>
+    <dimen name="margin_msmall">8dp</dimen>
+    <dimen name="margin_xmsmall">5dp</dimen>
+    <dimen name="margin_xsmall">4dp</dimen>
+    <dimen name="margin_xxsmall">3dp</dimen>
+
+    <!-- 通用的TextSize -->
+    <dimen name="text_title_xbig">23sp</dimen>
+    <dimen name="text_title_big">21sp</dimen>
+    <dimen name="text_title_medium_xlarge">19sp</dimen>
+    <dimen name="text_title_medium_large">18sp</dimen>
+    <dimen name="text_title_medium">17sp</dimen>
+    <dimen name="text_title_medium_small">16sp</dimen>
+    <dimen name="text_body_medium">15sp</dimen>
+    <dimen name="text_body_medium_small">14sp</dimen>
+    <dimen name="text_label_big">13sp</dimen>
+    <dimen name="text_label_medium">12sp</dimen>
+    <dimen name="text_label_small">11sp</dimen>
+    <dimen name="text_label_xsmall">10sp</dimen>
+    
+    <!-- choosecity fragment -->
+    <dimen name="choose_city_list_item_height">47dp</dimen>
+    <dimen name="choose_city_title_height">33dp</dimen>
+    <dimen name="choose_city_item_text_size">15sp</dimen>
+    <dimen name="choose_city_title_text_size">16sp</dimen>
+    <dimen name="choose_city_letter_item_height">20dp</dimen>
+    <dimen name="choosecity_margin_left_right">13dp</dimen>
+    
+    <!-- title  -->
+    <dimen name="title_view_padding">10dp</dimen>
+    <dimen name="title_view_height">46dp</dimen>
+    <dimen name="title_leftview_drawable_padding">3dp</dimen>
+    <dimen name="title_centerview_marginleft">5dp</dimen>
+</resources>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <!--Common colors,use only ,change the value with steady!-->
+    <color name="transparent">#00000000</color>
+    <color name="white">#ffffff</color>
+    <color name="red">#be1919</color>
+    <color name="translucent">#80000000</color>
+    <color name="black">#000000</color>
+    <color name="image_default_background">#ededed</color>
+    <color name="bg_gray">#E4E4E4</color>
+
+    <color name="tab_selected">#6c7988</color>
+    <color name="tab_selected_no">#aeb8c2</color>
+
+    <!--TextView && EditText text color -->
+    <color name="focus_gray">#8b949c</color>
+    <color name="focus_yellow">#e8d034</color>
+    <color name="focus_orange_deep">#97743D</color>
+    <color name="focus_black">#535c64</color>
+    <color name="focus_orange">#e8d034</color>
+    <color name="focus_phone_text_gray">#79888f</color>
+    <color name="focus_edit_hint">#aeb8c2</color>
+    <color name="focus_white">#ffffff</color>
+    <color name="focus_list_item_bghl">#eaeef0</color>
+    <color name="background">#ebebeb</color>
+    <color name="bg_title">#F53F14</color>
+    <color name="light">#999999</color>
+    <color name="bg_bottom_tab">#323C4D</color>
+    <color name="text_light_gray">#a2a0ab</color>
+    
+    
+
+</resources>

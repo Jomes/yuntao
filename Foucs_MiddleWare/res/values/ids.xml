@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="fragment_group" type="id"/>
+    <item name="fragment_customer" type="id"/>
+    <item name="fragment_achievement" type="id"/>
+    <item name="fragment_personcenter" type="id"/>
+    <!--  -->
+    <item name="tv_no_data" type="id"/>
+    <!-- 数据加载状态ID -->
+ <item name="lib_refresh" type="id"/>
+ <item name="lib_no_data" type="id"/>
+ <item name="lib_failure" type="id"/>
+</resources>
