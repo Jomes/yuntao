@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * 所有的服务器返回接口model继承自本类
- * 
+ * hahahha
  * @author lbritney
  * 
  */
