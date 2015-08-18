@@ -43,6 +43,8 @@ public class LoginFragmentWebView extends BaseFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
+		
+		
 		View view = View.inflate(mContext, R.layout.activity_login_web, null);
 		mProgressDialog = new SimpleProgressDialog(mContext,
 				R.style.myProgressdialog);
