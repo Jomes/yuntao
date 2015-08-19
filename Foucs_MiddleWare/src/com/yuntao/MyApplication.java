@@ -2,6 +2,8 @@ package com.yuntao;
 
 import android.app.Application;
 
+import com.igexin.sdk.PushManager;
+
 public class MyApplication extends Application
 {
 	private static MyApplication instance = null;
@@ -10,6 +12,7 @@ public class MyApplication extends Application
 	public void onCreate()
 	{
 		super.onCreate();
+
 		
 	}
 
