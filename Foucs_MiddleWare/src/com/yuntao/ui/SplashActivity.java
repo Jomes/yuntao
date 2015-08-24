@@ -6,25 +6,36 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 import com.igexin.sdk.PushManager;
+import com.sohu.focus.framework.loader.FocusResponseError;
 import com.yuntao.Constants;
 import com.yuntao.R;
 import com.yuntao.base.BaseActivity;
+import com.yuntao.http.ParamManage;
+import com.yuntao.http.Request;
+import com.yuntao.http.ResponseListener;
+import com.yuntao.mode.Homepic;
+import com.yuntao.service.LoadingService;
 import com.yuntao.ui.login.LoginActivity;
 import com.yuntao.utils.PreferenceManager;
+import com.yuntao.widget.FileUtils;
 
 /**
  * 启动页面
  */
 public class SplashActivity extends BaseActivity {
     private Handler mHandler = new Handler();
+    private ImageView mimagview;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
         initdata();
+        mimagview = (ImageView) findViewById(R.id.imagview);
         startLoading();
+        getPic();
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.alpha);
         findViewById(R.id.splash_content).startAnimation(animation);
         animation.setAnimationListener(new Animation.AnimationListener() {
@@ -97,4 +108,54 @@ public class SplashActivity extends BaseActivity {
         return false;
     }
 
+
+    private void getPic() {
+
+        new Request<Homepic>(mContext)
+                .url("http://www.yyyt.com/api/data/gethomepic").cache(false)
+                .clazz(Homepic.class)
+                .listener(new ResponseListener<Homepic>() {
+
+                    @Override
+                    public void loadFromCache(Homepic response, long dataTime) {
+
+
+                    }
+
+                    @Override
+                    public void loadFinish(Homepic response, long dataTime) {
+
+                        if (response != null) {
+                            String url = response.getContent();
+                            Intent getTokenIntent = new Intent(mContext, LoadingService.class);
+                            getTokenIntent.putExtra("Intent_url", url);
+                            startService(getTokenIntent);
+
+                        }
+
+                    }
+
+                    @Override
+                    public void loadError(FocusResponseError.CODE errorCode) {
+
+
+                    }
+                }).exec();
+
+        FileUtils fileUtils = new FileUtils();
+        if (fileUtils.isFileExist(fileUtils.fileName)) {
+            mimagview.setImageBitmap(fileUtils.getDiskBitmap(fileUtils.fileName));
+        } else {
+            //显示本地图片
+            mimagview.setBackgroundResource(R.drawable.ic_launcher);
+        }
+
+
+    }
+
+
 }
+
+
+
+

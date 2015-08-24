@@ -1,12 +1,8 @@
 package com.yuntao.ui.login;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +17,10 @@ import com.sohu.focus.framework.util.LogUtils;
 import com.yuntao.Constants;
 import com.yuntao.R;
 import com.yuntao.base.BaseFragment;
-import com.yuntao.utils.CommonUtil;
 import com.yuntao.utils.PreferenceManager;
 import com.yuntao.utils.TitleHelperUtils;
-import com.yuntao.widget.ScrollWebView;
+
+import org.apache.http.cookie.Cookie;
 
 /**
  * Created by jomeslu on 2015/3/5.
@@ -74,16 +70,22 @@ public class LoginFragmentWebView extends BaseFragment {
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.getSettings().setSupportZoom(true);
         mWebView.getSettings().setBuiltInZoomControls(true);
-        mWebView.setWebViewClient(new ViewClient());
         mWebView.getSettings().setLoadWithOverviewMode(true);
         mWebView.getSettings().setDomStorageEnabled(true);
         mWebView.getSettings().setDatabaseEnabled(true);
-
+        mWebView.setWebViewClient(new ViewClient());
 
 
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.setAcceptCookie(true);
-        cookieManager.setCookie(urlSuccess, cookes);//cookies是在HttpClient中获得的cookie
+        if(!TextUtils.isEmpty(cookes))
+            cookieManager.setCookie(urlSuccess, cookes);//cookies是在HttpClient中获得的cookie
+
+
+//        cookieManager.setCookie(urlSuccess, "");//cookies是在HttpClient中获得的cookie
+        //cartlist=; .ASPXAUTH=A0C0658AFE30FAFA2A44A31E7B28A781A82DB6F8DBC83C24496656AEA843D0B05B0BD84FB508525B9D5F0E53A90DC1326C2008CFEFE493799CF72B6470DABA7936DE06E5C8C35E330CF70D8F93BD1146CD3843FAE392F471E5FA8A34AA58DDBE685F3EB3EF686209F46B9061789A8A6A; Hm_lvt_e64aeaa6111827e178a0925ec22b7fea=1476947855,1477275429,1477275463; Hm_lpvt_e64aeaa6111827e178a0925ec22b7fea=1477277609
+
+//        synCookies(mContext,urlSuccess, cookes);
 //        synCookies(mContext, urlSuccess, cookes);
 
     }
@@ -119,6 +121,12 @@ public class LoginFragmentWebView extends BaseFragment {
             String cookes = CookieManager.getInstance().getCookie(url);
             saveCookes(cookes);
             mProgressDialog.dismiss();
+
+
+
+
+
+
         }
 
         @Override
@@ -201,6 +209,8 @@ public class LoginFragmentWebView extends BaseFragment {
     }
 
 
+
+
     /**
      * **只保存一次**
      */
@@ -224,16 +234,24 @@ public class LoginFragmentWebView extends BaseFragment {
      * 初始话Cookes
      */
     private void iniCookes() {
-        cookes = PreferenceManager.getInstance(mContext).getStringData(Constants.pre_cookies, "");
-        LogUtils.i("init "+cookes);
+        cookes = PreferenceManager.getInstance(mContext).getStringData(Constants.pre_cookies, "" );
     }
 
-    public static void synCookies(Context context, String url,String cookes) {
-        CookieSyncManager.createInstance(context);
-        CookieManager cookieManager = CookieManager.getInstance();
-        cookieManager.setCookie(url, cookes);
-        CookieSyncManager.getInstance().sync();
-    }
+//    public static void synCookies(Context context, String url,String cookes) {
+//        CookieSyncManager.createInstance(context);
+//        CookieManager cookieManager = CookieManager.getInstance();
+//        cookieManager.setCookie(url, cookes);
+//        CookieSyncManager.getInstance().sync();
+//    }
+
+//    public static void synCookies(Context context, String url,String cookes) {
+//        CookieSyncManager.createInstance(context);
+//        CookieManager cookieManager = CookieManager.getInstance();
+//        cookieManager.setAcceptCookie(true);
+//        cookieManager.removeSessionCookie();//移除
+//        cookieManager.setCookie(url, cookes);//指定要修改的cookies
+//        CookieSyncManager.getInstance().sync();
+//    }
 
 
     @Override

@@ -22,4 +22,5 @@ public class Constants {
 	public static final String pre_cookies="pre_cookies";
 
 	public  static final String PREFERENCE_KEY_APP_IS_FIRSTUSE ="pre_firstuse";
+	public static  final String splaName="lzs.jpg";
 }

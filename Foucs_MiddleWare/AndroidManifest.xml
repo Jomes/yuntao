@@ -33,6 +33,8 @@
         android:name="getui.permission.GetuiService.com.getui.demo"
         android:protectionLevel="normal" >
     </permission>
+    <!--在sdcard中创建/删除文件的权限 -->
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
 
 
 
@@ -103,6 +105,11 @@
             </intent-filter>
         </receiver>
 
+        <service
+            android:name=".service.LoadingService"
+            android:exported="false" >
+        </service>
+
         <receiver
             android:name="com.igexin.sdk.PushManagerReceiver"
             android:exported="false">
@@ -151,6 +158,12 @@
         <service
             android:name="com.igexin.getuiext.service.GetuiExtService"
             android:process=":pushservice" />
+
+        <!--<com.yuntao.service.LoadingService-->
+            <!--android:exported="false"-->
+            <!--/>-->
+
+
 
 
     </application>
