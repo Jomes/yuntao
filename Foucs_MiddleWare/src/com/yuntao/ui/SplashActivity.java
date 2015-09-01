@@ -18,10 +18,12 @@ import com.yuntao.base.BaseActivity;
 import com.yuntao.http.ParamManage;
 import com.yuntao.http.Request;
 import com.yuntao.http.ResponseListener;
+import com.yuntao.http.UrlManage;
 import com.yuntao.mode.BounleMode;
 import com.yuntao.mode.Homepic;
 import com.yuntao.service.LoadingService;
 import com.yuntao.ui.login.LoginActivity;
+import com.yuntao.utils.CommonUtil;
 import com.yuntao.utils.PreferenceManager;
 import com.yuntao.widget.FileUtils;
 
@@ -37,7 +39,6 @@ public class SplashActivity extends BaseActivity {
         setContentView(R.layout.splash);
         initdata();
         mimagview = (ImageView) findViewById(R.id.imagview);
-        startLoading();
         getPic();
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.alpha);
         findViewById(R.id.splash_content).startAnimation(animation);
@@ -81,12 +82,6 @@ public class SplashActivity extends BaseActivity {
         }, 200);
     }
 
-    /**
-     * 检查Token，异步Service请求Token和CityList
-     */
-    private void startLoading() {
-
-    }
 
     /**
      * 主页
@@ -98,19 +93,11 @@ public class SplashActivity extends BaseActivity {
     }
 
 
-    /**
-     * 引导页
-     */
-    private void showWelcomePage() {
-
-    }
-
     private boolean isFirstUse() {
         if (PreferenceManager.getInstance(this).getBoolData(Constants.PREFERENCE_KEY_APP_IS_FIRSTUSE, true)) {
             PreferenceManager.getInstance(this).saveData(Constants.PREFERENCE_KEY_APP_IS_FIRSTUSE, false);
             return true;
         }
-
 
         return false;
     }
@@ -118,8 +105,10 @@ public class SplashActivity extends BaseActivity {
 
     private void getPic() {
 
+        int w= CommonUtil.getScreenWidth(this);
+        int h=CommonUtil.getScreenHeight(this);
         new Request<Homepic>(mContext)
-                .url("http://www.yyyt.com/api/data/gethomepic").cache(false)
+                .url(ParamManage.getSpash(w,h)).cache(false)
                 .clazz(Homepic.class)
                 .listener(new ResponseListener<Homepic>() {
 

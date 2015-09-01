@@ -1,14 +1,26 @@
 package com.yuntao.ui.login;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.igexin.sdk.PushConsts;
 import com.igexin.sdk.PushManager;
 import com.sohu.focus.framework.util.LogUtils;
+import com.yuntao.Constants;
+import com.yuntao.R;
+import com.yuntao.base.core.BaseFragmentActivity;
+import com.yuntao.mode.PushMessage;
+
+import java.io.IOException;
 
 public class PushReceiver extends BroadcastReceiver {
 
@@ -21,7 +33,7 @@ public class PushReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
         Log.d("GetuiSdkDemo", "onReceive() action=" + bundle.getInt("action"));
-        LogUtils.i("GetuiSdkDemo____________"+bundle.getInt("action"));
+        LogUtils.i("GetuiSdkDemo____________" + bundle.getInt("action"));
 
         switch (bundle.getInt(PushConsts.CMD_ACTION)) {
             case PushConsts.GET_MSG_DATA:
@@ -40,13 +52,46 @@ public class PushReceiver extends BroadcastReceiver {
                     String data = new String(payload);
 
                     Log.d("GetuiSdkDemo", "receiver payload : " + data);
+                    ObjectMapper mapper = new ObjectMapper();
+                    PushMessage pushMessage = null;
+                    try {
+                        pushMessage = mapper.readValue(data.trim(), PushMessage.class);
+                    } catch (JsonParseException e) {
+                        e.printStackTrace();
+                    } catch (JsonMappingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    NotificationManager notificationManager =
+                            (NotificationManager) context
+                                    .getSystemService(Context.NOTIFICATION_SERVICE);
+//                    Notification notification =
+//                            new Notification(R.drawable.fxb_icon, pushMessage.getMessage(),
+//                                    System.currentTimeMillis());
+                    if(pushMessage==null)
+                        return;
 
-                    payloadData.append(data);
-                    payloadData.append("\n");
+                    Notification notification = new Notification();
+                    notification.icon = R.drawable.push;
+                    notification.when = System.currentTimeMillis();
+                    notification.defaults = Notification.DEFAULT_ALL;
+                    notification.tickerText = pushMessage.getTitle();
+                    Intent mIntent = new Intent();
+                    Bundle bundles = new Bundle();
+                    bundles.putString("url", pushMessage.getUrl());
+                    mIntent.putExtra(BaseFragmentActivity.PARAM_INTENT, bundles);
+                    mIntent.setClass(context, LoginActivity.class);
+                    int requestID = (int) System.currentTimeMillis();
+//                    mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    PendingIntent contentIntent =
+                            PendingIntent.getActivity(context, requestID, mIntent,
+                                    PendingIntent.FLAG_UPDATE_CURRENT);
+                    notification.setLatestEventInfo(context, "一元云涛",
+                            pushMessage.getContent(), contentIntent);
+                    notification.flags |= Notification.FLAG_AUTO_CANCEL;
+                    notificationManager.notify(1, notification);
 
-//                    if (GetuiSdkDemoActivity.tLogView != null) {
-//                        GetuiSdkDemoActivity.tLogView.append(data + "\n");
-//                    }
                 }
                 break;
 

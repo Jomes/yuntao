@@ -18,6 +18,8 @@ import com.yuntao.Constants;
 import com.yuntao.MyApplication;
 import com.yuntao.R;
 import com.yuntao.base.BaseFragment;
+import com.yuntao.iter.OnBindAndAppoinmentListener;
+import com.yuntao.mode.BindReslut;
 import com.yuntao.utils.PreferenceManager;
 import com.yuntao.utils.TitleHelperUtils;
 
@@ -26,7 +28,7 @@ import org.apache.http.cookie.Cookie;
 /**
  * Created by jomeslu on 2015/3/5.
  */
-public class LoginFragmentWebView extends BaseFragment {
+public class LoginFragmentWebView extends BaseFragment implements OnBindAndAppoinmentListener {
 
     private WebView mWebView;
     private String oldUid;
@@ -41,6 +43,7 @@ public class LoginFragmentWebView extends BaseFragment {
                              Bundle savedInstanceState) {
 
 
+        initDatas();
         View view = View.inflate(mContext, R.layout.activity_login_web, null);
         mProgressDialog = new SimpleProgressDialog(mContext,
                 R.style.myProgressdialog);
@@ -52,6 +55,21 @@ public class LoginFragmentWebView extends BaseFragment {
         return view;
     }
 
+    private void initDatas() {
+        MyApplication.getInstance().registBindAndAppoinmentListener(this);
+        if(getArguments()!=null){
+            defaultLoginUrl= getArguments().getString("url");
+
+        }
+
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        MyApplication.getInstance().unRegisterBindAndAppoinmentListener(this);
+    }
 
     @Override
     protected void initTitleView(TitleHelperUtils mTitleHelper) {
@@ -92,6 +110,16 @@ public class LoginFragmentWebView extends BaseFragment {
     }
 
     private boolean isLoading = false;
+
+    @Override
+    public void onBindResult(BindReslut reslut, int mode) {
+
+        if(mode==Constants.EVENT_PUSH_RECOMMOD)
+        if (reslut != null) {
+            mWebView.loadUrl(reslut.getUrl());
+        }
+
+    }
 
     private class ViewClient extends WebViewClient {
 
@@ -217,8 +245,8 @@ public class LoginFragmentWebView extends BaseFragment {
                 isSaved = true;
                 PreferenceManager.getInstance(mContext).saveData(Constants.pre_cookies, cookes);
                 String token = getToken(cookes);
-                if(token.indexOf("=")==0){
-                    token=token.substring(1,token.length());
+                if (token.indexOf("=") == 0) {
+                    token = token.substring(1, token.length());
                 }
                 PreferenceManager.getInstance(mContext).saveData(Constants.pre_token, token);
                 MyApplication.getInstance().setAlia();
@@ -233,11 +261,11 @@ public class LoginFragmentWebView extends BaseFragment {
     private String key = "yyytcode=";
 
     private String getToken(String cookies) {
-        if(!cookies.contains(";"))
+        if (!cookies.contains(";"))
             return "";
         String[] split = cookies.split(";");
         for (int i = 0; i < split.length; i++) {
-            String str=split[i];
+            String str = split[i];
             if (str.contains(key)) {
                 return str.substring(key.length(), str.length());
             }

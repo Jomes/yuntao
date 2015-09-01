@@ -24,4 +24,7 @@ public class Constants {
 	public  static final String PREFERENCE_KEY_APP_IS_FIRSTUSE ="pre_firstuse";
 	public static  final String splaName="lzs.jpg";
 	public static final String pre_token="pre_token";
+	public static final String INTENT_PUSH_MODE = "push";
+	//推送
+	public static final int EVENT_PUSH_RECOMMOD = 1;
 }
