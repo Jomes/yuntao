@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.igexin.sdk.PushConsts;
 import com.igexin.sdk.PushManager;
+import com.sohu.focus.framework.util.LogUtils;
 
 public class PushReceiver extends BroadcastReceiver {
 
@@ -20,6 +21,7 @@ public class PushReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
         Log.d("GetuiSdkDemo", "onReceive() action=" + bundle.getInt("action"));
+        LogUtils.i("GetuiSdkDemo____________"+bundle.getInt("action"));
 
         switch (bundle.getInt(PushConsts.CMD_ACTION)) {
             case PushConsts.GET_MSG_DATA:

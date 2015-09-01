@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import com.igexin.sdk.PushManager;
 import com.sohu.focus.framework.loader.FocusResponseError;
 import com.yuntao.Constants;
+import com.yuntao.MyApplication;
 import com.yuntao.R;
 import com.yuntao.base.BaseActivity;
 import com.yuntao.http.ParamManage;
@@ -56,6 +58,10 @@ public class SplashActivity extends BaseActivity {
 
     private void initdata() {
         PushManager.getInstance().initialize(this.getApplicationContext());
+        String clientId=PushManager.getInstance().getClientid(this);
+        if(TextUtils.isEmpty(clientId));
+            MyApplication.getInstance().setAlia();
+
     }
 
     private void jumpToAnotherActivity() {

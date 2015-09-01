@@ -15,6 +15,7 @@ import android.webkit.WebViewClient;
 
 import com.sohu.focus.framework.util.LogUtils;
 import com.yuntao.Constants;
+import com.yuntao.MyApplication;
 import com.yuntao.R;
 import com.yuntao.base.BaseFragment;
 import com.yuntao.utils.PreferenceManager;
@@ -78,7 +79,7 @@ public class LoginFragmentWebView extends BaseFragment {
 
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.setAcceptCookie(true);
-        if(!TextUtils.isEmpty(cookes))
+        if (!TextUtils.isEmpty(cookes))
             cookieManager.setCookie(urlSuccess, cookes);//cookies是在HttpClient中获得的cookie
 
 
@@ -121,10 +122,6 @@ public class LoginFragmentWebView extends BaseFragment {
             String cookes = CookieManager.getInstance().getCookie(url);
             saveCookes(cookes);
             mProgressDialog.dismiss();
-
-
-
-
 
 
         }
@@ -209,8 +206,6 @@ public class LoginFragmentWebView extends BaseFragment {
     }
 
 
-
-
     /**
      * **只保存一次**
      */
@@ -219,22 +214,45 @@ public class LoginFragmentWebView extends BaseFragment {
     private void saveCookes(String cookes) {
         if (!isSaved) {
             if (isHasCookies(cookes)) {
-                isSaved=true;
-                PreferenceManager.getInstance(mContext).saveData(Constants.pre_cookies,cookes);
-
+                isSaved = true;
+                PreferenceManager.getInstance(mContext).saveData(Constants.pre_cookies, cookes);
+                String token = getToken(cookes);
+                if(token.indexOf("=")==0){
+                    token=token.substring(1,token.length());
+                }
+                PreferenceManager.getInstance(mContext).saveData(Constants.pre_token, token);
+                MyApplication.getInstance().setAlia();
             }
 
         }
 
     }
 
-    private String cookes="";
+
+    private String key = "yyytcode=";
+
+    private String getToken(String cookies) {
+        if(!cookies.contains(";"))
+            return "";
+        String[] split = cookies.split(";");
+        for (int i = 0; i < split.length; i++) {
+            String str=split[i];
+            if (str.contains(key)) {
+                return str.substring(key.length(), str.length());
+            }
+
+        }
+        return "";
+
+    }
+
+    private String cookes = "";
 
     /**
      * 初始话Cookes
      */
     private void iniCookes() {
-        cookes = PreferenceManager.getInstance(mContext).getStringData(Constants.pre_cookies, "" );
+        cookes = PreferenceManager.getInstance(mContext).getStringData(Constants.pre_cookies, "");
     }
 
 //    public static void synCookies(Context context, String url,String cookes) {
