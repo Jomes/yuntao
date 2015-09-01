@@ -222,6 +222,7 @@ public class LoginFragmentWebView extends BaseFragment {
                 }
                 PreferenceManager.getInstance(mContext).saveData(Constants.pre_token, token);
                 MyApplication.getInstance().setAlia();
+                MyApplication.getInstance().bindleInfo();
             }
 
         }

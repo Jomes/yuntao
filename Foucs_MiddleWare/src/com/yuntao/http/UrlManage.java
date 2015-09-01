@@ -9,6 +9,6 @@ import java.net.URL;
 public class UrlManage {
 
     //正式环境
-    private static final String URL_BASE = "http://fxb.sohusce.com/";
-    //测试环境(给测试用的)
+    private  static final String URL_BASE = "http://m.yyyt.com/api";
+    public static final String URL_bound = URL_BASE+"/JPData";
 }

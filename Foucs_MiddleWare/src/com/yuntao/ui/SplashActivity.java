@@ -18,6 +18,7 @@ import com.yuntao.base.BaseActivity;
 import com.yuntao.http.ParamManage;
 import com.yuntao.http.Request;
 import com.yuntao.http.ResponseListener;
+import com.yuntao.mode.BounleMode;
 import com.yuntao.mode.Homepic;
 import com.yuntao.service.LoadingService;
 import com.yuntao.ui.login.LoginActivity;
@@ -58,9 +59,9 @@ public class SplashActivity extends BaseActivity {
 
     private void initdata() {
         PushManager.getInstance().initialize(this.getApplicationContext());
-        String clientId=PushManager.getInstance().getClientid(this);
-        if(TextUtils.isEmpty(clientId));
-            MyApplication.getInstance().setAlia();
+        String clientId = PushManager.getInstance().getClientid(this);
+        if (TextUtils.isEmpty(clientId)) ;
+        MyApplication.getInstance().setAlia();
 
     }
 
@@ -158,6 +159,9 @@ public class SplashActivity extends BaseActivity {
 
 
     }
+
+
+
 
 
 }
