@@ -16,6 +16,7 @@ import com.igexin.sdk.PushConsts;
 import com.igexin.sdk.PushManager;
 import com.sohu.focus.framework.util.LogUtils;
 import com.yuntao.Constants;
+import com.yuntao.MyApplication;
 import com.yuntao.R;
 import com.yuntao.base.core.BaseFragmentActivity;
 import com.yuntao.mode.PushMessage;
@@ -72,25 +73,34 @@ public class PushReceiver extends BroadcastReceiver {
                     if(pushMessage==null)
                         return;
 
-                    Notification notification = new Notification();
-                    notification.icon = R.drawable.push;
-                    notification.when = System.currentTimeMillis();
-                    notification.defaults = Notification.DEFAULT_ALL;
-                    notification.tickerText = pushMessage.getTitle();
-                    Intent mIntent = new Intent();
-                    Bundle bundles = new Bundle();
-                    bundles.putString("url", pushMessage.getUrl());
-                    mIntent.putExtra(BaseFragmentActivity.PARAM_INTENT, bundles);
-                    mIntent.setClass(context, LoginActivity.class);
-                    int requestID = (int) System.currentTimeMillis();
+                    if(pushMessage.getType()==1){
+                        //退出登录
+                        MyApplication.getInstance().onBindAndAppoinmentSuccess(null,Constants.EVENT_PUSH_LOGOUT);
+                        LogUtils.i("退出登录");
+
+                    }else{
+                        Notification notification = new Notification();
+                        notification.icon = R.drawable.push;
+                        notification.when = System.currentTimeMillis();
+                        notification.defaults = Notification.DEFAULT_ALL;
+                        notification.tickerText = pushMessage.getTitle();
+                        Intent mIntent = new Intent();
+                        Bundle bundles = new Bundle();
+                        bundles.putString("url", pushMessage.getUrl());
+                        mIntent.putExtra(BaseFragmentActivity.PARAM_INTENT, bundles);
+                        mIntent.setClass(context, LoginActivity.class);
+                        int requestID = (int) System.currentTimeMillis();
 //                    mIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    PendingIntent contentIntent =
-                            PendingIntent.getActivity(context, requestID, mIntent,
-                                    PendingIntent.FLAG_UPDATE_CURRENT);
-                    notification.setLatestEventInfo(context, "一元云涛",
-                            pushMessage.getContent(), contentIntent);
-                    notification.flags |= Notification.FLAG_AUTO_CANCEL;
-                    notificationManager.notify(1, notification);
+                        PendingIntent contentIntent =
+                                PendingIntent.getActivity(context, requestID, mIntent,
+                                        PendingIntent.FLAG_UPDATE_CURRENT);
+                        notification.setLatestEventInfo(context, "一元云涛",
+                                pushMessage.getContent(), contentIntent);
+                        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+                        notificationManager.notify(1, notification);
+
+                    }
+
 
                 }
                 break;

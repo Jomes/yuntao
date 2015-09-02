@@ -13,6 +13,7 @@ import android.webkit.HttpAuthHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.igexin.sdk.PushManager;
 import com.sohu.focus.framework.util.LogUtils;
 import com.yuntao.Constants;
 import com.yuntao.MyApplication;
@@ -35,7 +36,7 @@ public class LoginFragmentWebView extends BaseFragment implements OnBindAndAppoi
 
     private String urlSuccess = "http://m.yyyt.com";// 正式环境
     //http://m.yyyt.com/passport/login
-    private String defaultLoginUrl = urlSuccess + "/passport/login";
+    private String defaultLoginUrl = urlSuccess + "/passport/login?type=android";
     private SimpleProgressDialog mProgressDialog;
 
     @Override
@@ -114,10 +115,21 @@ public class LoginFragmentWebView extends BaseFragment implements OnBindAndAppoi
     @Override
     public void onBindResult(BindReslut reslut, int mode) {
 
-        if(mode==Constants.EVENT_PUSH_RECOMMOD)
-        if (reslut != null) {
-            mWebView.loadUrl(reslut.getUrl());
+        if(mode==Constants.EVENT_PUSH_RECOMMOD){
+            if (reslut != null) {
+                mWebView.loadUrl(reslut.getUrl());
+            }
+
+        } else if(mode==Constants.EVENT_PUSH_LOGOUT){
+
+            LogUtils.i("退出！！！！！！");
+            // 退出登录
+            isSaved=false;
+            String preToken = PreferenceManager.getInstance(mContext).getStringData(Constants.pre_token, "");
+            PushManager.getInstance().unBindAlias(mContext, preToken, true);
+            PreferenceManager.getInstance(mContext).saveData(Constants.pre_token, "");
         }
+
 
     }
 

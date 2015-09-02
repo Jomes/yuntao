@@ -11,6 +11,17 @@ public class PushMessage extends BaseResponse {
     private String title;
     private String content;
     private String url;
+    private int type;
+
+    @Override
+    public int getType() {
+        return type;
+    }
+
+    @Override
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public String getTitle() {
         return title;

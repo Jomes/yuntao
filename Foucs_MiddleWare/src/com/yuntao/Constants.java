@@ -27,4 +27,5 @@ public class Constants {
 	public static final String INTENT_PUSH_MODE = "push";
 	//推送
 	public static final int EVENT_PUSH_RECOMMOD = 1;
+	public static final int EVENT_PUSH_LOGOUT = 2;
 }
