@@ -11,6 +11,7 @@
         android:id="@+id/imagview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:src="@drawable/splash"
         android:scaleType="fitXY"
         />
 </RelativeLayout>

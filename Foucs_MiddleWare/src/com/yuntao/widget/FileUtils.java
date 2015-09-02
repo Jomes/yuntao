@@ -16,7 +16,7 @@ import java.io.OutputStream;
 public class FileUtils {
 
     private String SDPATH;
-    public String fileName="lzs.jpg";
+    public String fileName="yyyt.jpg";
 
     public String getSDPATH() {
         return SDPATH;
