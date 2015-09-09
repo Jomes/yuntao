@@ -1,15 +1,27 @@
 package com.yuntao.ui.login;
 
-import android.content.Context;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.webkit.HttpAuthHandler;
+import android.webkit.JsResult;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -23,8 +35,12 @@ import com.yuntao.iter.OnBindAndAppoinmentListener;
 import com.yuntao.mode.BindReslut;
 import com.yuntao.utils.PreferenceManager;
 import com.yuntao.utils.TitleHelperUtils;
+import com.yuntao.widget.FileUpload;
 
-import org.apache.http.cookie.Cookie;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by jomeslu on 2015/3/5.
@@ -38,6 +54,10 @@ public class LoginFragmentWebView extends BaseFragment implements OnBindAndAppoi
     //http://m.yyyt.com/passport/login
     private String defaultLoginUrl = urlSuccess + "/passport/login?type=android";
     private SimpleProgressDialog mProgressDialog;
+    public final static int FILECHOOSER_RESULTCODE = 1;
+    private static final int REQ_CAMERA = FILECHOOSER_RESULTCODE + 1;
+    private static final int REQ_CHOOSE = REQ_CAMERA + 1;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,8 +78,8 @@ public class LoginFragmentWebView extends BaseFragment implements OnBindAndAppoi
 
     private void initDatas() {
         MyApplication.getInstance().registBindAndAppoinmentListener(this);
-        if(getArguments()!=null){
-            defaultLoginUrl= getArguments().getString("url");
+        if (getArguments() != null) {
+            defaultLoginUrl = getArguments().getString("url");
 
         }
 
@@ -93,6 +113,17 @@ public class LoginFragmentWebView extends BaseFragment implements OnBindAndAppoi
         mWebView.getSettings().setLoadWithOverviewMode(true);
         mWebView.getSettings().setDomStorageEnabled(true);
         mWebView.getSettings().setDatabaseEnabled(true);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
+            // Hide the zoom controls for HONEYCOMB+
+            mWebView.getSettings().setDisplayZoomControls(false);
+        }
+        // Enable remote debugging via chrome://inspect
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
+
+
+        mWebView.setWebChromeClient(new WebChromeClientImpl());
         mWebView.setWebViewClient(new ViewClient());
 
 
@@ -101,13 +132,6 @@ public class LoginFragmentWebView extends BaseFragment implements OnBindAndAppoi
         if (!TextUtils.isEmpty(cookes))
             cookieManager.setCookie(urlSuccess, cookes);//cookies是在HttpClient中获得的cookie
 
-
-//        cookieManager.setCookie(urlSuccess, "");//cookies是在HttpClient中获得的cookie
-        //cartlist=; .ASPXAUTH=A0C0658AFE30FAFA2A44A31E7B28A781A82DB6F8DBC83C24496656AEA843D0B05B0BD84FB508525B9D5F0E53A90DC1326C2008CFEFE493799CF72B6470DABA7936DE06E5C8C35E330CF70D8F93BD1146CD3843FAE392F471E5FA8A34AA58DDBE685F3EB3EF686209F46B9061789A8A6A; Hm_lvt_e64aeaa6111827e178a0925ec22b7fea=1476947855,1477275429,1477275463; Hm_lpvt_e64aeaa6111827e178a0925ec22b7fea=1477277609
-
-//        synCookies(mContext,urlSuccess, cookes);
-//        synCookies(mContext, urlSuccess, cookes);
-
     }
 
     private boolean isLoading = false;
@@ -115,16 +139,16 @@ public class LoginFragmentWebView extends BaseFragment implements OnBindAndAppoi
     @Override
     public void onBindResult(BindReslut reslut, int mode) {
 
-        if(mode==Constants.EVENT_PUSH_RECOMMOD){
+        if (mode == Constants.EVENT_PUSH_RECOMMOD) {
             if (reslut != null) {
                 mWebView.loadUrl(reslut.getUrl());
             }
 
-        } else if(mode==Constants.EVENT_PUSH_LOGOUT){
+        } else if (mode == Constants.EVENT_PUSH_LOGOUT) {
 
             LogUtils.i("退出！！！！！！");
             // 退出登录
-            isSaved=false;
+            isSaved = false;
             String preToken = PreferenceManager.getInstance(mContext).getStringData(Constants.pre_token, "");
             PushManager.getInstance().unBindAlias(mContext, preToken, true);
             PreferenceManager.getInstance(mContext).saveData(Constants.pre_token, "");
@@ -209,24 +233,6 @@ public class LoginFragmentWebView extends BaseFragment implements OnBindAndAppoi
         mWebView.loadUrl(url);
     }
 
-//    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        if (CommonUtil.getOSVersion() >= 11)
-//            mWebView.onPause();
-//        mWebView.pauseTimers();
-//    }
-//
-//    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        if (CommonUtil.getOSVersion() >= 11)
-//            mWebView.onResume();
-//        mWebView.resumeTimers();
-//    }
-
 
     @Override
     public void onDestroy() {
@@ -296,21 +302,334 @@ public class LoginFragmentWebView extends BaseFragment implements OnBindAndAppoi
         cookes = PreferenceManager.getInstance(mContext).getStringData(Constants.pre_cookies, "");
     }
 
-//    public static void synCookies(Context context, String url,String cookes) {
-//        CookieSyncManager.createInstance(context);
-//        CookieManager cookieManager = CookieManager.getInstance();
-//        cookieManager.setCookie(url, cookes);
-//        CookieSyncManager.getInstance().sync();
-//    }
 
-//    public static void synCookies(Context context, String url,String cookes) {
-//        CookieSyncManager.createInstance(context);
-//        CookieManager cookieManager = CookieManager.getInstance();
-//        cookieManager.setAcceptCookie(true);
-//        cookieManager.removeSessionCookie();//移除
-//        cookieManager.setCookie(url, cookes);//指定要修改的cookies
-//        CookieSyncManager.getInstance().sync();
-//    }
+    //----------------------------------------------------------
+
+    private ValueCallback<Uri[]> mFilePathCallback;
+    public ValueCallback<Uri> mUploadMessage;
+    public static final int INPUT_FILE_REQUEST_CODE = 11;
+    private String mCameraPhotoPath;
+
+    private class WebChromeClientImpl extends WebChromeClient {
+
+        //扩展支持alert事件
+        @Override
+        public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+            builder.setTitle("一元云淘").setMessage(message).setPositiveButton("确定", null);
+            builder.setCancelable(false);
+            builder.setIcon(R.drawable.ic_launcher);
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            result.confirm();
+            return true;
+        }
+
+        public boolean onShowFileChooser(
+                WebView webView, ValueCallback<Uri[]> filePathCallback,
+                FileChooserParams fileChooserParams) {
+            if (mFilePathCallback != null) {
+                mFilePathCallback.onReceiveValue(null);
+            }
+            mFilePathCallback = filePathCallback;
+
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                // Create the File where the photo should go
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                    takePictureIntent.putExtra("PhotoPath", mCameraPhotoPath);
+                } catch (IOException ex) {
+                    // Error occurred while creating the File
+//                    Log.e(TAG, "Unable to create Image File", ex);
+                }
+
+                // Continue only if the File was successfully created
+                if (photoFile != null) {
+                    mCameraPhotoPath = "file:" + photoFile.getAbsolutePath();
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                            Uri.fromFile(photoFile));
+                } else {
+                    takePictureIntent = null;
+                }
+            }
+
+            Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
+            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
+            contentSelectionIntent.setType("image/*");
+
+            Intent[] intentArray;
+            if (takePictureIntent != null) {
+                intentArray = new Intent[]{takePictureIntent};
+            } else {
+                intentArray = new Intent[0];
+            }
+
+            Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
+            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
+            chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser");
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
+
+            startActivityForResult(chooserIntent, INPUT_FILE_REQUEST_CODE);
+
+            return true;
+        }
+
+
+        // For Android 3.0+
+        public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType) {
+            if (mUploadMessage != null) return;
+            mUploadMessage = uploadMsg;
+            selectImage();
+//               Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+//               i.addCategory(Intent.CATEGORY_OPENABLE);
+//               i.setType("*/*");
+//                   startActivityForResult( Intent.createChooser( i, "File Chooser" ), FILECHOOSER_RESULTCODE );
+        }
+
+        // For Android < 3.0
+        public void openFileChooser(ValueCallback<Uri> uploadMsg) {
+            openFileChooser(uploadMsg, "");
+        }
+
+        // For Android  > 4.1.1
+        public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
+            openFileChooser(uploadMsg, acceptType);
+        }
+
+
+    }
+
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File imageFile = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        return imageFile;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
+//        if(resultCode==REQ_CAMERA||resultCode==REQ_CHOOSE){
+//
+//            if (null == mUploadMessage)
+//                return;
+//            Uri uri = null;
+//            if (requestCode == REQ_CAMERA) {
+//                afterOpenCamera();
+//                uri = cameraUri;
+//            } else if (requestCode == REQ_CHOOSE) {
+//                uri = afterChosePic(data);
+//            }
+//            mUploadMessage.onReceiveValue(uri);
+//            mUploadMessage = null;
+//            super.onActivityResult(requestCode, resultCode, data);
+//
+//        }else {
+
+
+        if (requestCode == INPUT_FILE_REQUEST_CODE) {
+
+            if (requestCode != INPUT_FILE_REQUEST_CODE || mFilePathCallback == null) {
+                super.onActivityResult(requestCode, resultCode, data);
+                return;
+            }
+
+            Uri[] results = null;
+
+            // Check that the response is a good one
+            if (resultCode == Activity.RESULT_OK) {
+                if (data == null) {
+                    // If there is not data, then we may have taken a photo
+                    if (mCameraPhotoPath != null) {
+                        results = new Uri[]{Uri.parse(mCameraPhotoPath)};
+                    }
+                } else {
+                    String dataString = data.getDataString();
+                    if (dataString != null) {
+                        results = new Uri[]{Uri.parse(dataString)};
+                    }
+                }
+            }
+
+            mFilePathCallback.onReceiveValue(results);
+            mFilePathCallback = null;
+            return;
+
+        } else {
+            if (null == mUploadMessage)
+                return;
+            Uri uri = null;
+            if (requestCode == REQ_CAMERA) {
+                afterOpenCamera();
+                uri = cameraUri;
+            } else if (requestCode == REQ_CHOOSE) {
+                uri = afterChosePic(data);
+            }
+            mUploadMessage.onReceiveValue(uri);
+            mUploadMessage = null;
+            super.onActivityResult(requestCode, resultCode, data);
+
+
+        }
+
+
+//        }
+
+
+    }
+
+
+    //------------------------------5.0一下的兼容----
+    String imagePaths;
+    Uri cameraUri;
+    private String compressPath = "";
+
+    /**
+     * 打开照相机
+     */
+    private void openCarcme() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        imagePaths = Environment.getExternalStorageDirectory().getPath()
+                + "/fuiou_wmp/temp/"
+                + (System.currentTimeMillis() + ".jpg");
+        // 必须确保文件夹路径存在，否则拍照后无法完成回调
+        File vFile = new File(imagePaths);
+        if (!vFile.exists()) {
+            File vDirPath = vFile.getParentFile();
+            vDirPath.mkdirs();
+        } else {
+            if (vFile.exists()) {
+                vFile.delete();
+            }
+        }
+        cameraUri = Uri.fromFile(vFile);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraUri);
+        startActivityForResult(intent, REQ_CAMERA);
+    }
+
+    /**
+     * 拍照结束后
+     */
+    private void afterOpenCamera() {
+        File f = new File(imagePaths);
+        addImageGallery(f);
+        File newFile = FileUpload.compressFile(f.getPath(), compressPath);
+    }
+
+    /**
+     * 解决拍照后在相册中找不到的问题
+     */
+    private void addImageGallery(File file) {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DATA, file.getAbsolutePath());
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+        mContext.getContentResolver().insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+    }
+
+    /**
+     * 本地相册选择图片
+     */
+    private void chosePic() {
+        FileUpload.delFile(compressPath);
+        Intent innerIntent = new Intent(Intent.ACTION_GET_CONTENT); // "android.intent.action.GET_CONTENT"
+        String IMAGE_UNSPECIFIED = "image/*";
+        innerIntent.setType(IMAGE_UNSPECIFIED); // 查看类型
+        Intent wrapperIntent = Intent.createChooser(innerIntent, null);
+        startActivityForResult(wrapperIntent, REQ_CHOOSE);
+    }
+
+    /**
+     * 选择照片后结束
+     *
+     * @param data
+     */
+    private Uri afterChosePic(Intent data) {
+
+        if (data == null)
+            return null;
+
+        // 获取图片的路径：
+        String[] proj = {MediaStore.Images.Media.DATA};
+        // 好像是android多媒体数据库的封装接口，具体的看Android文档
+        Cursor cursor = mContext.managedQuery(data.getData(), proj, null, null, null);
+        if (cursor == null) {
+            showToast("上传的图片仅支持png或jpg格式");
+            return null;
+        }
+        // 按我个人理解 这个是获得用户选择的图片的索引值
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        // 将光标移至开头 ，这个很重要，不小心很容易引起越界
+        cursor.moveToFirst();
+        // 最后根据索引值获取图片路径
+        String path = cursor.getString(column_index);
+        if (path != null && (path.endsWith(".png") || path.endsWith(".PNG") || path.endsWith(".jpg") || path.endsWith(".JPG"))) {
+            File newFile = FileUpload.compressFile(path, compressPath);
+            return Uri.fromFile(newFile);
+        } else {
+            showToast("上传的图片仅支持png或jpg格式");
+        }
+        return null;
+    }
+
+    protected final void selectImage() {
+        if (!checkSDcard())
+            return;
+        String[] selectPicTypeStr = {"camera", "photo"};
+        new AlertDialog.Builder(mContext)
+                .setItems(selectPicTypeStr,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                switch (which) {
+                                    // 相机拍摄
+                                    case 0:
+                                        openCarcme();
+                                        break;
+                                    // 手机相册
+                                    case 1:
+                                        chosePic();
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                compressPath = Environment
+                                        .getExternalStorageDirectory()
+                                        .getPath()
+                                        + "/fuiou_wmp/temp";
+                                new File(compressPath).mkdirs();
+                                compressPath = compressPath + File.separator
+                                        + "compress.jpg";
+                            }
+                        }).show();
+    }
+
+    /**
+     * 检查SD卡是否存在
+     *
+     * @return
+     */
+    public final boolean checkSDcard() {
+        boolean flag = Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED);
+        if (!flag) {
+            showToast("请插入手机存储卡再使用本功能");
+        }
+        return flag;
+    }
 
 
     @Override

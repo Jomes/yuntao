@@ -10,6 +10,15 @@ public class Homepic extends  BaseResponse {
 
     private int state;
     private String content;
+    private String message;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     public String getContent() {
         return content;

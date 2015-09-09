@@ -23,6 +23,7 @@ import com.yuntao.mode.BounleMode;
 import com.yuntao.mode.Homepic;
 import com.yuntao.service.LoadingService;
 import com.yuntao.ui.login.LoginActivity;
+import com.yuntao.ui.login.MainActivity;
 import com.yuntao.utils.CommonUtil;
 import com.yuntao.utils.PreferenceManager;
 import com.yuntao.widget.FileUtils;
@@ -90,6 +91,11 @@ public class SplashActivity extends BaseActivity {
         Intent mIntent = new Intent(this, LoginActivity.class);
         startActivity(mIntent);
         finish();
+
+//        Intent mIntent = new Intent(this, MainActivity.class);
+//        startActivity(mIntent);
+//        finish();
+
     }
 
 
@@ -122,7 +128,7 @@ public class SplashActivity extends BaseActivity {
                     public void loadFinish(Homepic response, long dataTime) {
 
                         if (response != null) {
-                            String url = response.getContent();
+                            String url = response.getMessage();
                             Intent getTokenIntent = new Intent(mContext, LoadingService.class);
                             getTokenIntent.putExtra("Intent_url", url);
                             startService(getTokenIntent);

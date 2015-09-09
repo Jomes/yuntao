@@ -94,7 +94,7 @@ public class PushReceiver extends BroadcastReceiver {
                         PendingIntent contentIntent =
                                 PendingIntent.getActivity(context, requestID, mIntent,
                                         PendingIntent.FLAG_UPDATE_CURRENT);
-                        notification.setLatestEventInfo(context, "一元云涛",
+                        notification.setLatestEventInfo(context, "一元云淘",
                                 pushMessage.getContent(), contentIntent);
                         notification.flags |= Notification.FLAG_AUTO_CANCEL;
                         notificationManager.notify(1, notification);

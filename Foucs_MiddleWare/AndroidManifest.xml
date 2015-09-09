@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
+
     <uses-permission android:name="android.permission.GET_TASKS" />
     <!-- 支持iBeancon 需要蓝牙权限 -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -60,7 +61,13 @@
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="false"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.login.MainActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
 
         <!-- 个推SDK配置开始 -->
