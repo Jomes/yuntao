@@ -129,6 +129,9 @@ public class SplashActivity extends BaseActivity {
 
                         if (response != null) {
                             String url = response.getMessage();
+                            MyApplication.getInstance().setAdvGoUrl(response.getAdvJumpUrl());
+                            MyApplication.getInstance().setAdvImgUrl(response.getAdvPicUrl());
+
                             Intent getTokenIntent = new Intent(mContext, LoadingService.class);
                             getTokenIntent.putExtra("Intent_url", url);
                             startService(getTokenIntent);

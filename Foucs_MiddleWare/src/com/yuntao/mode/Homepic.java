@@ -12,6 +12,25 @@ public class Homepic extends  BaseResponse {
     private String content;
     private String message;
 
+    private String advPicUrl;
+    private String advJumpUrl;
+
+    public String getAdvPicUrl() {
+        return advPicUrl;
+    }
+
+    public void setAdvPicUrl(String advPicUrl) {
+        this.advPicUrl = advPicUrl;
+    }
+
+    public String getAdvJumpUrl() {
+        return advJumpUrl;
+    }
+
+    public void setAdvJumpUrl(String advJumpUrl) {
+        this.advJumpUrl = advJumpUrl;
+    }
+
     public String getMessage() {
         return message;
     }

@@ -20,6 +20,8 @@ import java.util.Map;
 
 public class MyApplication extends Application {
     private static MyApplication instance;
+    private String adv_img_url;
+    private String adv_go_url;
     private HashMap<String, OnBindAndAppoinmentListener> mBindList;
 
     @Override
@@ -38,6 +40,25 @@ public class MyApplication extends Application {
         LogUtils.i("clientId____________:" + PushManager.getInstance().getClientid(this));
 
 
+    }
+
+
+    public String getAdvImgUrl() {
+
+        return adv_img_url;
+    }
+
+    public String getAdvGoUrl() {
+
+        return adv_go_url;
+    }
+
+    public void setAdvImgUrl(String url) {
+        adv_img_url = url;
+    }
+
+    public void setAdvGoUrl(String url) {
+        adv_go_url = url;
     }
 
 

@@ -24,8 +24,10 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
 
 import com.igexin.sdk.PushManager;
+import com.sohu.focus.framework.loader.RequestLoader;
 import com.sohu.focus.framework.util.LogUtils;
 import com.yuntao.Constants;
 import com.yuntao.MyApplication;
@@ -58,6 +60,10 @@ public class LoginFragmentWebView extends BaseFragment implements OnBindAndAppoi
     private static final int REQ_CAMERA = FILECHOOSER_RESULTCODE + 1;
     private static final int REQ_CHOOSE = REQ_CAMERA + 1;
 
+    private View advParent;
+    private ImageView advimageView;
+    private ImageView cancelView;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,6 +78,7 @@ public class LoginFragmentWebView extends BaseFragment implements OnBindAndAppoi
         initView(view);
         initTitle(view);
         initData(defaultLoginUrl);
+
 
         return view;
     }
@@ -99,9 +106,42 @@ public class LoginFragmentWebView extends BaseFragment implements OnBindAndAppoi
 
     }
 
+    private boolean isFirstLoading = true;
+
+    /**
+     * 显示广告位
+     */
+    private void showAdv() {
+
+        if (!TextUtils.isEmpty(MyApplication.getInstance().getAdvGoUrl())) {
+            if (isFirstLoading) {
+                advParent.setVisibility(View.VISIBLE);
+                isFirstLoading = false;
+                if (!TextUtils.isEmpty(MyApplication.getInstance().getAdvImgUrl())) {
+                    RequestLoader.getInstance(mContext).displayImage(MyApplication.getInstance().getAdvImgUrl(),
+                            advimageView, ImageView.ScaleType.FIT_XY, R.drawable.ic_launcher,
+                            R.drawable.ic_launcher, "FIT_XY", null);
+                } else {
+                    advimageView.setImageResource(R.drawable.ic_launcher);
+                }
+
+            }
+
+        }
+
+
+    }
+
 
     public void initView(View view) {
         mWebView = (WebView) view.findViewById(R.id.login_webview);
+        advParent = view.findViewById(R.id.ll_adv);
+        advimageView = (ImageView) view.findViewById(R.id.adv);
+        cancelView = (ImageView) view.findViewById(R.id.chanal);
+
+        cancelView.setOnClickListener(this);
+        advimageView.setOnClickListener(this);
+
         mWebView.requestFocus();
         mWebView.setInitialScale(100);
         mWebView.getSettings().setAllowFileAccess(true);
@@ -186,7 +226,7 @@ public class LoginFragmentWebView extends BaseFragment implements OnBindAndAppoi
             String cookes = CookieManager.getInstance().getCookie(url);
             saveCookes(cookes);
             mProgressDialog.dismiss();
-
+            showAdv();
 
         }
 
@@ -641,6 +681,15 @@ public class LoginFragmentWebView extends BaseFragment implements OnBindAndAppoi
             case R.id.title_left:
                 finishCurrent();
                 break;
+
+            case R.id.chanal:
+                advParent.setVisibility(View.GONE);
+                break;
+            case R.id.adv:
+                mWebView.loadUrl(MyApplication.getInstance().getAdvGoUrl());
+                advParent.setVisibility(View.GONE);
+                break;
+
 
         }
 
