@@ -48,6 +48,7 @@ public class SplashActivity extends BaseActivity {
             public void onAnimationStart(Animation arg0) {
             }
 
+
             @Override
             public void onAnimationRepeat(Animation arg0) {
             }
